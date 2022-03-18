@@ -1,15 +1,20 @@
 package com.example.mydatabinding;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Window;
+import android.widget.LinearLayout;
 
 import com.example.mydatabinding.databinding.ActivityMainBinding;
 import com.example.mydatabinding.remote.PokemonInfoService;
@@ -33,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "zhu";
     private PokemonInfoService infoService;
     private AVLoadingIndicatorView loading_view;
+    private int offset = 0;
+    private int limit = 200;
 
     //用于更新UI
     Handler handler = new Handler(){
@@ -40,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
-                case 1:
+                case 1://代表初始数据加载完毕
                     loading_view.hide();
                     break;
             }
@@ -86,6 +93,15 @@ public class MainActivity extends AppCompatActivity {
         binding.setUser(user);
         loading_view = findViewById(R.id.progress_my_3);
 
+        Window window = getWindow();
+
+        WindowCompat.setDecorFitsSystemWindows(window,false); //沉浸式状态栏
+        window.setStatusBarColor(Color.TRANSPARENT);//设置状态栏颜色为透明
+        try {
+            //设置状态栏文字为黑色
+            ViewCompat.getWindowInsetsController(window.getDecorView()).setAppearanceLightStatusBars(true);
+        }catch (Exception e){e.printStackTrace();}
+
         //被观察者
         Observable<List<String>> listObs = Observable.create(new ObservableOnSubscribe<List<String>>() {
             @Override
@@ -94,13 +110,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run(){
                         super.run();
-                        int offset = 0;
-                        int limit = 50;
                         PokemonInfoService api_service = new PokemonInfoService("https://pokeapi.co/api/v2/");
                         List<String> p_name_list = new ArrayList<>();
                         p_name_list = api_service.getPokemonListAsync(offset,limit);
-
-                        for(int i=0;i<100;i++){
+                        for(int i=0;i<200;i++){
                             try {
                                 Thread.sleep(100);//休眠,等待异步数据加载完毕
                             } catch (Exception e) {

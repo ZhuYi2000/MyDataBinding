@@ -24,7 +24,15 @@ public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.LeftViewHolder
     private Context context;
     private RecyclerView rv;
     private List<String> list = new ArrayList<>();
+    private OnItemClickListener mOnItemClickListener;
 
+    public interface OnItemClickListener{
+        void onItemClick(RecyclerView parent,View view, int p_id);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener clickListener){
+        this.mOnItemClickListener = clickListener;
+    }
 
     public LeftAdapter(Context context, RecyclerView rv, List<String> list) {
         this.context = context;
@@ -46,6 +54,16 @@ public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.LeftViewHolder
         String id_text = "#"+(position+1);
         holder.mId.setText(id_text);
         bindImageView(holder,position);
+
+        holder.mContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mOnItemClickListener!=null){
+                    int p_id = holder.getAdapterPosition()+1;
+                    mOnItemClickListener.onItemClick(rv,view,p_id);
+                }
+            }
+        });
     }
 
     @Override

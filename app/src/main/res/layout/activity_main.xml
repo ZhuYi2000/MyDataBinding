@@ -7,52 +7,18 @@
             type="com.example.mydatabinding.User" />
     </data>
     <LinearLayout
+        android:paddingTop="25dp"
+        android:id="@+id/main_linearLayout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@{user.firstName}"/>
         <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{user.lastName}"/>
-
-        <com.akexorcist.roundcornerprogressbar.CenteredRoundCornerProgressBar
-            android:layout_width="260dp"
-            android:layout_height="30dp"
-            app:rcBackgroundColor="#0A000000"
-            app:rcBackgroundPadding="2dp"
-            app:rcMax="100"
-            app:rcProgress="40"
-            app:rcProgressColor="#EF5350"
-            app:rcRadius="10dp"/>
-        <com.akexorcist.roundcornerprogressbar.indeterminate.IndeterminateRoundCornerProgressBar
-            android:layout_width="260dp"
-            android:layout_height="10dp"
-            android:layout_marginTop="20dp"
-            app:rcAnimationSpeedScale="3"
-            app:rcBackgroundColor="#0A000000"
-            app:rcProgressColor="#EF5350" />
-
-        <com.wang.avi.AVLoadingIndicatorView
-            android:id="@+id/progress_my"
-            android:layout_marginTop="20dp"
-            style="@style/AVLoadingIndicatorView.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:indicatorName="SquareSpinIndicator"
-            app:indicatorColor="@color/teal_200"/>
-
-        <com.wang.avi.AVLoadingIndicatorView
-            android:id="@+id/progress_my_2"
-            android:layout_marginTop="20dp"
-            style="@style/AVLoadingIndicatorView.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            app:indicatorName="BallSpinFadeLoaderIndicator"
-            app:indicatorColor="@color/teal_200"/>
 
         <FrameLayout
             android:id="@+id/my_frameLayout"
@@ -62,10 +28,10 @@
                 android:layout_gravity="center"
                 android:id="@+id/progress_my_3"
                 style="@style/AVLoadingIndicatorView.Large"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:visibility="visible"
-                app:indicatorName="BallSpinFadeLoaderIndicator"
+                app:indicatorName="BallClipRotatePulseIndicator"
                 app:indicatorColor="@color/teal_200"/>
         </FrameLayout>
 

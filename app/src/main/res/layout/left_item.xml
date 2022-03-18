@@ -8,6 +8,7 @@
     app:cardCornerRadius="4dp"
     app:cardElevation="5dp"
     app:contentPadding="5dp"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
     android:id="@+id/left_item_container">
 
 <LinearLayout
