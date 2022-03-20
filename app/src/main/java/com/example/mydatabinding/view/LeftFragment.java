@@ -1,4 +1,4 @@
-package com.example.mydatabinding;
+package com.example.mydatabinding.view;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.example.mydatabinding.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +71,7 @@ public class LeftFragment extends Fragment implements LeftAdapter.OnItemClickLis
         mRecyclerView.setAdapter(mLeftAdapter);
 
 
-        //设置监听器，在到达底部的时候加载更多数据
+        //设置监听器，在到达底部的时候加载更多数据,不涉及业务逻辑、仅仅是UI操作,所以放在View层即可
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -95,22 +97,6 @@ public class LeftFragment extends Fragment implements LeftAdapter.OnItemClickLis
             }
         });
 
-
-//        new Thread(){
-//            @Override
-//            public void run() {
-//                super.run();
-//                try {
-//                    while (!isBottom(mRecyclerView)){
-//                        Thread.sleep(500);//每隔0.5s进行轮询，判断用户是否到达底部
-//                    }
-//                    boolean f1 = isBottom(mRecyclerView);
-//                    Log.d(TAG,"到达底部："+f1);
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        }.start();
 
         return view;
     }
@@ -143,7 +129,7 @@ public class LeftFragment extends Fragment implements LeftAdapter.OnItemClickLis
     @Override
     public void onItemClick(RecyclerView parent, View view, int p_id) {
         Log.d(TAG,"点击"+p_id);
-        Intent info_intent = new Intent(mContext,PokemonInfoActivity.class);
+        Intent info_intent = new Intent(mContext, PokemonInfoActivity.class);
         info_intent.putExtra("p_id",p_id);
         startActivity(info_intent);
     }

@@ -1,11 +1,10 @@
-package com.example.mydatabinding;
+package com.example.mydatabinding.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.mydatabinding.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+//adapter基本上大部分都算是对UI的操作，因此算是View层
 public class LeftAdapter extends RecyclerView.Adapter<LeftAdapter.LeftViewHolder> {
 
     private Context context;

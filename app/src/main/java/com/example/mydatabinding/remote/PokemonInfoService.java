@@ -17,6 +17,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+//有了model以后，这个类就弃用了
 public class PokemonInfoService {
     private Retrofit retrofit;
     private IPokemonInfoService infoService;

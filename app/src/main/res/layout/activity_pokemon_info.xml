@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:paddingTop="25dp"
-    tools:context=".PokemonInfoActivity">
+    android:paddingTop="30dp"
+    tools:context=".view.PokemonInfoActivity">
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
