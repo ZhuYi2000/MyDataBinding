@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#FFF8F8FF</color>
     <color name="background">#FFCCFFCC</color>
+    <color name="toolBar_background">#FFFB6556</color>
 </resources>

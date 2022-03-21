@@ -8,14 +8,17 @@
     </data>
     <LinearLayout
         android:paddingTop="30dp"
+        android:paddingBottom="15dp"
         android:id="@+id/main_linearLayout"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        
         <FrameLayout
             android:id="@+id/my_frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp"
+            android:layout_weight="0.9">
             <com.wang.avi.AVLoadingIndicatorView
                 android:layout_gravity="center"
                 android:id="@+id/progress_my_3"
@@ -27,5 +30,77 @@
                 app:indicatorColor="@color/teal_200"/>
         </FrameLayout>
 
+        <LinearLayout
+            android:background="@color/toolBar_background"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.07"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/tab_left"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:gravity="center_horizontal"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/tab_left_iv"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/tab_left"/>
+                <TextView
+                    android:id="@+id/tab_left_tv"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:text="精灵图鉴"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab_middle"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/tab_middle_iv"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/tab_middle"/>
+                <TextView
+                    android:id="@+id/tab_middle_tv"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:text="寻找精灵"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tab_right"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/tab_right_iv"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/tab_right"/>
+                <TextView
+                    android:id="@+id/tab_right_tv"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:text="我的背包"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 </layout>
