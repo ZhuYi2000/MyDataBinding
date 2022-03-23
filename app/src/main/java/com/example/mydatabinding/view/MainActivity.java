@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements IView {
     private ImageView left_iv,middle_iv,right_iv;
     private TextView left_tv,middle_tv,right_tv;
 
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements IView {
         right_iv = findViewById(R.id.tab_right_iv);
         right_tv = findViewById(R.id.tab_right_tv);
 
+        context = this;
 
         left.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements IView {
             @Override
             public void onClick(View view) {
                 if(!middle_iv.isSelected()){
-                    loadFragment(new MiddleFragment());
+                    loadFragment(new MiddleFragment(context));
                 }
                 middle_iv.setSelected(true);
                 middle_tv.setTextColor(Color.WHITE);

@@ -14,12 +14,14 @@
         app:title="@string/app_name"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@color/white">
-
     </androidx.appcompat.widget.Toolbar>
-    <TextView
-        android:gravity="center"
+
+    <com.amap.api.maps.TextureMapView
+
+        android:id="@+id/map"
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="中间的地图fragment" />
+
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
