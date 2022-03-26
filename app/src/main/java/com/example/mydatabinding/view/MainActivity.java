@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements IView {
             @Override
             public void onClick(View view) {
                 if(!right_iv.isSelected()){
-                    loadFragment(new RightFragment());
+                    loadFragment(new RightFragment(context));
                 }
                 right_iv.setSelected(true);
                 right_tv.setTextColor(Color.WHITE);

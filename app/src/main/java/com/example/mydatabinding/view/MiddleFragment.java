@@ -37,6 +37,7 @@ import java.util.List;
 
 public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocationChangeListener {
 
+    private static final String TAG = "zhu";
     private TextureMapView textureMapView;
     private AMap aMap;
     private final Context parent_context;
@@ -121,8 +122,8 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
                     }
                 }
             }.start();
-
         }
+        Log.d(TAG,"onActivityCreated");
     }
 
     /**
@@ -132,6 +133,7 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
     public void onResume() {
         super.onResume();
         textureMapView.onResume();
+        Log.d(TAG,"onResume");
     }
 
     /**
@@ -141,6 +143,7 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
     public void onPause() {
         super.onPause();
         textureMapView.onPause();
+        Log.d(TAG,"onPause");
     }
 
     /**
@@ -159,6 +162,7 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
     public void onDestroy() {
         super.onDestroy();
         textureMapView.onDestroy();
+        Log.d(TAG,"onDestroy");
     }
 
     @Override
