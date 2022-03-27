@@ -12,5 +12,8 @@ public interface IDBPresenter {
     void getPokemonByTrainer(long trainer_id);//根据用户ID查询其拥有的宝可梦ID
     void addPokemonByTrainer(long trainer_id,long pokemon_id);//增加用户捕捉到的一只宝可梦
 
-    void isLogin();//查询本地SQLite数据库
+    void isLogin();//查询本地数据，判断用户是否已经登录
+    void saveLogin(Trainer trainer);//保存登录状态
+
+    void trainerLogout(Trainer the_trainer);
 }

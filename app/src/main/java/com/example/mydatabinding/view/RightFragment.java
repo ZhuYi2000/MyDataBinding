@@ -44,7 +44,7 @@ public class RightFragment extends Fragment implements IDBView{
     public LinearLayout login_register,trainer_info;
 
     public Button login_btn,register_btn;
-    public TextView trainer_name,trainer_id;
+    public TextView trainer_name,trainer_id,logout_tv;
 
     public Trainer the_trainer = new Trainer();
 
@@ -55,9 +55,10 @@ public class RightFragment extends Fragment implements IDBView{
             switch (msg.what){
                 case 1:
                     login_register.setVisibility(View.INVISIBLE);
-                    trainer_name.setText("用户名："+the_trainer.getT_name());
-                    trainer_id.setText("用户ID："+the_trainer.getT_id());
+                    trainer_name.setText("训练师："+the_trainer.getT_name());
+                    trainer_id.setText("ID："+the_trainer.getT_id());
                     trainer_info.setVisibility(View.VISIBLE);
+                    logout_tv.setVisibility(View.VISIBLE);
                     break;
             }
         }
@@ -88,8 +89,20 @@ public class RightFragment extends Fragment implements IDBView{
         login_register = view.findViewById(R.id.login_register);
         trainer_info = view.findViewById(R.id.trainer_info);
 
+        //调用presenter.isLogin()方法，判断是否已经登录，如果已经登录，修改UI显示，隐藏login_register,显示trainer_info
+        //如果未登录或者登录已经过期，则不用改变UI视图
+        rightPresenter.isLogin();
+
         trainer_name = view.findViewById(R.id.trainer_name);
         trainer_id = view.findViewById(R.id.trainer_id);
+
+        logout_tv = view.findViewById(R.id.logout_tv);
+        logout_tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rightPresenter.trainerLogout(the_trainer);
+            }
+        });
 
         login_btn = view.findViewById(R.id.login_btn);
         login_btn.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +120,6 @@ public class RightFragment extends Fragment implements IDBView{
             }
         });
 
-        //rightPresenter.addTrainer("小心","3333");
-        //rightPresenter.loginTrainer("小王","123");
         return view;
     }
 
@@ -155,8 +166,34 @@ public class RightFragment extends Fragment implements IDBView{
         Message msg = new Message();
         msg.what = 1;
         handler.sendMessage(msg);
+        //应该调用presenter中的saveLogin(Trainer trainer)方法保存登录状态
+        rightPresenter.saveLogin(trainer);
         Looper.loop();
     }
+
+    @Override
+    public void showAlreadyLogin(Trainer trainer) {
+        the_trainer = trainer;
+        Message msg = new Message();
+        msg.what = 1;
+        handler.sendMessage(msg);
+    }
+
+    @Override
+    public void showNotLogin() {
+        login_register.setVisibility(View.VISIBLE);
+        trainer_info.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showAlreadyLogout(Trainer trainer) {
+        the_trainer = new Trainer();
+        Toast.makeText(parent_context, "训练师 "+trainer.getT_name()+" 已退出！", Toast.LENGTH_SHORT).show();
+        login_register.setVisibility(View.VISIBLE);
+        trainer_info.setVisibility(View.INVISIBLE);
+        logout_tv.setVisibility(View.INVISIBLE);
+    }
+
 
     public void showRegisterDialog(){
         View view = LayoutInflater.from(parent_context).inflate(R.layout.dialog_register,null,false);

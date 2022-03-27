@@ -81,9 +81,18 @@ public class RightPresenter implements IDBPresenter, RightModel.DataBaseCallback
 
     @Override
     public void isLogin() {
-
+        rightModel.isLogin(context);
     }
 
+    @Override
+    public void saveLogin(Trainer trainer) {
+        rightModel.saveLogin(trainer,context);
+    }
+
+    @Override
+    public void trainerLogout(Trainer the_trainer) {
+        rightModel.logout(the_trainer,context);
+    }
 
     //回调函数
     @Override
@@ -131,5 +140,21 @@ public class RightPresenter implements IDBPresenter, RightModel.DataBaseCallback
     @Override
     public void failureInsertPT() {
 
+    }
+
+    @Override
+    public void alreadyLogin(Trainer trainer) {
+        temp_password = trainer.getPassword();
+        rightFragment.showAlreadyLogin(trainer);
+    }
+
+    @Override
+    public void notLogin() {
+        rightFragment.showNotLogin();
+    }
+
+    @Override
+    public void alreadyLogout(Trainer trainer) {
+        rightFragment.showAlreadyLogout(trainer);
     }
 }
