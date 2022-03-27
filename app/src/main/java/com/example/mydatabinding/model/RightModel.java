@@ -79,7 +79,6 @@ public class RightModel implements IDBModel {
         //数据库操作必须在新的线程中操作
         try {
             Connection conn = getConnection();
-            Statement st = conn.createStatement();
             String sql = "select * from user_base where user_name = ?";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.setString(1,trainer_name);
@@ -94,7 +93,7 @@ public class RightModel implements IDBModel {
             else callback.failureTrainerByName(trainer);//用户名不存在
 
             rs.close();
-            st.close();
+            preparedStatement.close();
             conn.close();
         }catch (Exception e){
             e.printStackTrace();
@@ -120,7 +119,20 @@ public class RightModel implements IDBModel {
 
     @Override
     public void selectPokemonByTrainer(long trainer_id) {
-
+        try {
+            Connection conn = getConnection();
+            String sql = "select * from user_pokemon where user_id = ?";
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.setLong(1,trainer_id);
+            ResultSet rs = preparedStatement.executeQuery();
+            List<Integer> pid_list = new ArrayList<>();
+            while (rs.next()){
+                pid_list.add(rs.getInt("pokemon_id"));
+            }
+            callback.successPokemonByTrainer(trainer_id,pid_list);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -232,7 +244,7 @@ public class RightModel implements IDBModel {
         void successInsertTrainer();
         void failureInsertTrainer();
 
-        void successPokemonByTrainer(long trainer_id,List<Long> pid_list);
+        void successPokemonByTrainer(long trainer_id,List<Integer> pid_list);
         void successInsertPT();
         void failureInsertPT();
 

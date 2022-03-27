@@ -2,6 +2,8 @@ package com.example.mydatabinding.view;
 
 import com.example.mydatabinding.enity.Trainer;
 
+import java.util.List;
+
 //待完善这个接口
 //一开始是登录按钮、注册按钮
 //点击登录按钮，输入信息，调用presenter的login方法，成功后，显示界面
@@ -23,4 +25,7 @@ public interface IDBView {
     void showAlreadyLogout(Trainer trainer);
 
 
+    void showNonePokemon();
+
+    void showAllPokemon(List<Integer> pid_list);
 }

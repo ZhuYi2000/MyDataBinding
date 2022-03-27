@@ -71,6 +71,13 @@ public class RightPresenter implements IDBPresenter, RightModel.DataBaseCallback
 
     @Override
     public void getPokemonByTrainer(long trainer_id) {
+        new Thread(){
+            @Override
+            public void run() {
+                super.run();
+                rightModel.selectPokemonByTrainer(trainer_id);
+            }
+        }.start();
 
     }
 
@@ -102,10 +109,10 @@ public class RightPresenter implements IDBPresenter, RightModel.DataBaseCallback
 
     @Override
     public void successTrainerByName(Trainer trainer) {
-        Log.d(TAG,trainer.getT_name());
-        Log.d(TAG,trainer.getT_id()+"");
-        Log.d(TAG,trainer.getPassword());
         if(trainer.getPassword().equals(temp_password)){
+            Log.d(TAG,trainer.getT_name());
+            Log.d(TAG,trainer.getT_id()+"");
+            Log.d(TAG,trainer.getPassword());
             rightFragment.showAfterLogin(trainer);
         }else {
             rightFragment.showPassError();
@@ -128,8 +135,13 @@ public class RightPresenter implements IDBPresenter, RightModel.DataBaseCallback
     }
 
     @Override
-    public void successPokemonByTrainer(long trainer_id, List<Long> pid_list) {
-
+    public void successPokemonByTrainer(long trainer_id, List<Integer> pid_list) {
+        if(pid_list.isEmpty()){
+            rightFragment.showNonePokemon();
+        }else{
+            Log.d(TAG,"获取到宝可梦ID列表,第一个是："+pid_list.get(0));
+            rightFragment.showAllPokemon(pid_list);
+        }
     }
 
     @Override

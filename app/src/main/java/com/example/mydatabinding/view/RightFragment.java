@@ -2,10 +2,13 @@ package com.example.mydatabinding.view;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -23,6 +26,10 @@ import com.example.mydatabinding.R;
 import com.example.mydatabinding.enity.Trainer;
 import com.example.mydatabinding.presenter.IDBPresenter;
 import com.example.mydatabinding.presenter.RightPresenter;
+import com.wang.avi.AVLoadingIndicatorView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 使用本地的SQLite数据库进行是否已经登录的状态保存
@@ -38,28 +45,44 @@ import com.example.mydatabinding.presenter.RightPresenter;
  * 点击登录按钮后：
  * 弹窗输入用户名称，密码，与云数据库进行比对，如果正确，显示用户详细信息，并将时间戳和登录用户ID称送入SQLite数据库中
  */
-public class RightFragment extends Fragment implements IDBView{
+public class RightFragment extends Fragment implements IDBView,RightAdapter.OnItemClickListener{
     public IDBPresenter rightPresenter;
     public Context parent_context;
     public LinearLayout login_register,trainer_info;
 
     public Button login_btn,register_btn;
-    public TextView trainer_name,trainer_id,logout_tv;
+    public TextView trainer_name,trainer_id,logout_tv,none_pokemon_tv;
+    public AVLoadingIndicatorView progress;
+    public RecyclerView recyclerView;
 
     public Trainer the_trainer = new Trainer();
+    public List<Integer> pid_list = new ArrayList<>();
 
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             switch (msg.what){
-                case 1:
+                case 1://登录成功或者已经登录会调用这个方法
                     login_register.setVisibility(View.INVISIBLE);
                     trainer_name.setText("训练师："+the_trainer.getT_name());
                     trainer_id.setText("ID："+the_trainer.getT_id());
                     trainer_info.setVisibility(View.VISIBLE);
                     logout_tv.setVisibility(View.VISIBLE);
+
+                    //获取已经捕捉到的精灵列表
+                    rightPresenter.getPokemonByTrainer(the_trainer.getT_id());
                     break;
+                case 2://背包中没有精灵
+                    none_pokemon_tv.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.INVISIBLE);
+                    break;
+                case 3://背包中有精灵，设置rv
+                    RightAdapter adapter = new RightAdapter(parent_context,recyclerView,pid_list);
+                    adapter.setOnItemClickListener(RightFragment.this::onItemClick);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    progress.setVisibility(View.INVISIBLE);
             }
         }
     };
@@ -82,20 +105,20 @@ public class RightFragment extends Fragment implements IDBView{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_right, container, false);
         rightPresenter = new RightPresenter(parent_context,this);
 
         login_register = view.findViewById(R.id.login_register);
         trainer_info = view.findViewById(R.id.trainer_info);
-
-        //调用presenter.isLogin()方法，判断是否已经登录，如果已经登录，修改UI显示，隐藏login_register,显示trainer_info
-        //如果未登录或者登录已经过期，则不用改变UI视图
-        rightPresenter.isLogin();
+        progress = view.findViewById(R.id.progress_my_8);
+        //设置rv布局及其adapter
+        recyclerView = view.findViewById(R.id.right_rv);
+        recyclerView.setLayoutManager(new GridLayoutManager(parent_context,4));
 
         trainer_name = view.findViewById(R.id.trainer_name);
         trainer_id = view.findViewById(R.id.trainer_id);
 
+        none_pokemon_tv = view.findViewById(R.id.none_pokemon_tv);
         logout_tv = view.findViewById(R.id.logout_tv);
         logout_tv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +143,9 @@ public class RightFragment extends Fragment implements IDBView{
             }
         });
 
+        //调用presenter.isLogin()方法，判断是否已经登录，如果已经登录，修改UI显示，隐藏login_register,显示trainer_info
+        //如果未登录或者登录已经过期，则不用改变UI视图
+        rightPresenter.isLogin();
         return view;
     }
 
@@ -189,11 +215,31 @@ public class RightFragment extends Fragment implements IDBView{
     public void showAlreadyLogout(Trainer trainer) {
         the_trainer = new Trainer();
         Toast.makeText(parent_context, "训练师 "+trainer.getT_name()+" 已退出！", Toast.LENGTH_SHORT).show();
+        //将所有UI的可视与否全都重置回初始状态
         login_register.setVisibility(View.VISIBLE);
         trainer_info.setVisibility(View.INVISIBLE);
         logout_tv.setVisibility(View.INVISIBLE);
+
+        none_pokemon_tv.setVisibility(View.INVISIBLE);
+        progress.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.INVISIBLE);
     }
 
+
+    @Override
+    public void showNonePokemon() {
+        Message msg = new Message();
+        msg.what = 2;
+        handler.sendMessage(msg);
+    }
+
+    @Override
+    public void showAllPokemon(List<Integer> pid_list) {
+        this.pid_list = pid_list;
+        Message msg = new Message();
+        msg.what = 3;
+        handler.sendMessage(msg);
+    }
 
     public void showRegisterDialog(){
         View view = LayoutInflater.from(parent_context).inflate(R.layout.dialog_register,null,false);
@@ -246,5 +292,13 @@ public class RightFragment extends Fragment implements IDBView{
             }
         });
         dialog.show();
+    }
+
+    //绑定rv的点击事件
+    @Override
+    public void onItemClick(RecyclerView parent, View view, int p_id) {
+        Intent info_intent = new Intent(parent_context, PokemonInfoActivity.class);
+        info_intent.putExtra("p_id",p_id);
+        startActivity(info_intent);
     }
 }

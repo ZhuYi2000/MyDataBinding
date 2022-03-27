@@ -90,7 +90,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_height="match_parent"
                         app:cardCornerRadius="20dp"
-                        app:cardElevation="5dp">
+                        app:cardElevation="2dp">
                         <ImageView
                             android:scaleType="fitXY"
                             android:src="@drawable/profile_picture"
@@ -147,6 +147,32 @@
                 app:cardCornerRadius="10dp"
                 app:cardElevation="10dp"
                 app:contentPadding="5dp">
+
+                <com.wang.avi.AVLoadingIndicatorView
+                    android:layout_gravity="center"
+                    android:id="@+id/progress_my_8"
+                    style="@style/AVLoadingIndicatorView.Large"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:visibility="visible"
+                    app:indicatorName="BallClipRotatePulseIndicator"
+                    app:indicatorColor="@color/teal_200"/>
+
+                <TextView
+                    android:visibility="invisible"
+                    android:id="@+id/none_pokemon_tv"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:text="背包中还没有精灵，快去捕捉吧！"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:visibility="invisible"
+                    android:id="@+id/right_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
             </androidx.cardview.widget.CardView>
 
