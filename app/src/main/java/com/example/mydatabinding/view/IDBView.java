@@ -25,7 +25,7 @@ public interface IDBView {
     void showAlreadyLogout(Trainer trainer);
 
 
-    void showNonePokemon();
+    void showNonePokemon();//用户没有宝可梦，显示提示语
 
-    void showAllPokemon(List<Integer> pid_list);
+    void showAllPokemon(List<Integer> pid_list);//用户有宝可梦，显示列表
 }

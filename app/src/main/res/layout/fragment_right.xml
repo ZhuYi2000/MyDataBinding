@@ -14,6 +14,19 @@
         app:title="@string/app_name"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:titleTextColor="@color/white">
+        <ImageView
+            android:layout_marginStart="20dp"
+            android:layout_gravity="start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/step_count"/>
+        <TextView
+            android:id="@+id/today_steps"
+            android:layout_gravity="start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
         <TextView
             android:visibility="invisible"
             android:id="@+id/logout_tv"

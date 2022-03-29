@@ -162,7 +162,7 @@ public class RightModel implements IDBModel {
                 long timestamp = Long.parseLong(str_timestamp);
                 long current_time = (long) System.currentTimeMillis()/1000;
                 long daySeconds = 86400;//一天有86400秒
-                if(current_time-timestamp<86400){
+                if(current_time-timestamp<daySeconds){
                     Log.d("zhu","登录文件未过期");
                     trainer.setT_id(t_id);
                     trainer.setPassword(password);

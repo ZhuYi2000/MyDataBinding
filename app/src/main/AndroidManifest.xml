@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mydatabinding">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <!-- 地图包、搜索包的基础权限 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 地图包、搜索包的基础权限 -->
     <!-- 允许程序打开网络套接字 -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 允许程序设置内置sd卡的写权限 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 允许程序获取网络状态 -->
@@ -19,10 +17,17 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明 -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
+    <uses-permission android:name="android.permission.CAMERA" /> <!-- 相机权限 -->
+    <uses-feature android:name="android.hardware.camera" /> <!-- 相机功能 -->
+
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION"/><!-- 计步权限，必须打开 -->
+    <uses-permission android:name="miui.permission.READ_STEPS" />
+    <uses-feature android:name="android.hardware.sensor.stepcounter"/><!-- 计步功能 -->
+    <uses-feature android:name="android.hardware.sensor.stepdetector"/>
+
     <queries>
         <package android:name="com.autonavi.minimap" />
     </queries>
-
 
     <application
         android:allowBackup="true"
@@ -31,6 +36,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MyDataBinding">
+        <activity
+            android:name=".view.CameraActivity"
+            android:exported="false" />
         <activity
             android:name=".view.PokemonInfoActivity"
             android:exported="false" />

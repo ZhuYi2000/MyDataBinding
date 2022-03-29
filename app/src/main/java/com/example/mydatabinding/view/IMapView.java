@@ -1,6 +1,7 @@
 package com.example.mydatabinding.view;
 
 import com.amap.api.maps.model.LatLng;
+import com.example.mydatabinding.enity.Trainer;
 
 import java.util.List;
 
@@ -12,4 +13,6 @@ public interface IMapView {
     void setMarker(List<LatLng> position_list,int pokemon_id,String pokemon_name,List<String> addressList);
     void hideProcess();
     void showErrorMessage();
+    void showNotLogin();
+    void showAlreadyLogin(Trainer trainer, String p_name);
 }

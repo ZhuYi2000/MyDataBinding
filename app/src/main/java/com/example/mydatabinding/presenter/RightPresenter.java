@@ -139,7 +139,7 @@ public class RightPresenter implements IDBPresenter, RightModel.DataBaseCallback
         if(pid_list.isEmpty()){
             rightFragment.showNonePokemon();
         }else{
-            Log.d(TAG,"获取到宝可梦ID列表,第一个是："+pid_list.get(0));
+            //Log.d(TAG,"获取到宝可梦ID列表,第一个是："+pid_list.get(0));
             rightFragment.showAllPokemon(pid_list);
         }
     }

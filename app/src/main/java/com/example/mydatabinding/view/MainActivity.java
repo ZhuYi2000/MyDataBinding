@@ -1,5 +1,7 @@
 package com.example.mydatabinding.view;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
@@ -7,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -38,6 +41,18 @@ public class MainActivity extends AppCompatActivity implements IView {
     private TextView left_tv,middle_tv,right_tv;
 
     private Context context;
+
+    //动态请求权限
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(),isGranted ->{
+               if(isGranted){
+                    //权限被允许
+                   //Toast.makeText(context, "成功获取权限", Toast.LENGTH_SHORT).show();
+               }else {
+                   //权限不被允许
+                   Toast.makeText(context, "未开启定位权限，请到设置中手动打开", Toast.LENGTH_SHORT).show();
+               }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +143,8 @@ public class MainActivity extends AppCompatActivity implements IView {
 
         //请求并加载数据
         leftPresenter.getPokemonList(offset,limit);
+
+        requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);//获取定位权限
     }
 
     @Override

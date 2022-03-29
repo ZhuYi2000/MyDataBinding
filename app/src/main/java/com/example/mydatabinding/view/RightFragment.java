@@ -3,6 +3,10 @@ package com.example.mydatabinding.view;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +31,12 @@ import com.example.mydatabinding.R;
 import com.example.mydatabinding.enity.Trainer;
 import com.example.mydatabinding.presenter.IDBPresenter;
 import com.example.mydatabinding.presenter.RightPresenter;
+import com.example.mydatabinding.sensor.MiStepSensor;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * 使用本地的SQLite数据库进行是否已经登录的状态保存
@@ -50,13 +57,40 @@ public class RightFragment extends Fragment implements IDBView,RightAdapter.OnIt
     public Context parent_context;
     public LinearLayout login_register,trainer_info;
 
+    private final String TAG = "zhu";
+
     public Button login_btn,register_btn;
-    public TextView trainer_name,trainer_id,logout_tv,none_pokemon_tv;
+    public TextView trainer_name,trainer_id,logout_tv,none_pokemon_tv,todaySteps_tv;
     public AVLoadingIndicatorView progress;
     public RecyclerView recyclerView;
 
     public Trainer the_trainer = new Trainer();
     public List<Integer> pid_list = new ArrayList<>();
+
+    private SensorManager stepManager;
+    private Sensor stepSensor,stepDetector;
+    private int step_count = 0;
+
+    //监听步数传感器的数据，废弃，MIUI中不好用
+    private final SensorEventListener mListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent sensorEvent) {
+            Log.d(TAG,"回调事件");
+            if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_DETECTOR) {
+                Log.d(TAG,"DETECTOR");
+                Toast.makeText(parent_context, "DETECTOR", Toast.LENGTH_SHORT).show();
+            }else if(sensorEvent.sensor.getType() == Sensor.TYPE_STEP_COUNTER){
+                Toast.makeText(parent_context, "COUNTER", Toast.LENGTH_SHORT).show();
+                Log.d(TAG,"COUNTER");
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int i) {
+
+        }
+    };
+
 
     private Handler handler = new Handler(){
         @Override
@@ -87,6 +121,7 @@ public class RightFragment extends Fragment implements IDBView,RightAdapter.OnIt
         }
     };
 
+
     public RightFragment(Context context) {
         parent_context = context;
     }
@@ -108,17 +143,28 @@ public class RightFragment extends Fragment implements IDBView,RightAdapter.OnIt
         View view = inflater.inflate(R.layout.fragment_right, container, false);
         rightPresenter = new RightPresenter(parent_context,this);
 
+        //绑定布局以及进度条
+        //login_register是用户未登录时显示的布局
+        //trainer_info是用户登录完毕后显示的布局
         login_register = view.findViewById(R.id.login_register);
         trainer_info = view.findViewById(R.id.trainer_info);
         progress = view.findViewById(R.id.progress_my_8);
+
         //设置rv布局及其adapter
         recyclerView = view.findViewById(R.id.right_rv);
         recyclerView.setLayoutManager(new GridLayoutManager(parent_context,4));
 
+        //绑定控件
         trainer_name = view.findViewById(R.id.trainer_name);
         trainer_id = view.findViewById(R.id.trainer_id);
 
+        //用户没有宝可梦时，显示这一句
         none_pokemon_tv = view.findViewById(R.id.none_pokemon_tv);
+
+        //每日步数，利用小米提供的接口实现
+        todaySteps_tv = view.findViewById(R.id.today_steps);
+
+        //登录以后显示在右上角的“退出登录”按钮
         logout_tv = view.findViewById(R.id.logout_tv);
         logout_tv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +173,7 @@ public class RightFragment extends Fragment implements IDBView,RightAdapter.OnIt
             }
         });
 
+        //登录按钮
         login_btn = view.findViewById(R.id.login_btn);
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +182,7 @@ public class RightFragment extends Fragment implements IDBView,RightAdapter.OnIt
             }
         });
 
+        //注册按钮
         register_btn = view.findViewById(R.id.register_btn);
         register_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,8 +194,62 @@ public class RightFragment extends Fragment implements IDBView,RightAdapter.OnIt
         //调用presenter.isLogin()方法，判断是否已经登录，如果已经登录，修改UI显示，隐藏login_register,显示trainer_info
         //如果未登录或者登录已经过期，则不用改变UI视图
         rightPresenter.isLogin();
+
+        //初始化步数传感器，获取系统目前步数
+        //stepManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        String brand = android.os.Build.BRAND;
+        Log.d(TAG,brand);
+
+        //只有在小米手机上，才能使用计步器接口
+        if(brand.equals("Xiaomi")){
+            MiStepSensor miStepSensor = new MiStepSensor(parent_context);
+            int todaySteps = miStepSensor.getTodaySteps(todaySteps_tv);
+        }
+
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //initStepSensor();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //stepManager.unregisterListener(mListener);
+    }
+
+    private void initStepSensor() {
+        stepSensor = stepManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        stepDetector = stepManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR);
+        if(stepSensor!=null){
+            Log.d(TAG,"stepCounter 获取成功");
+            Log.d(TAG,"stepCounter:"+stepSensor.getResolution());
+            Log.d(TAG,"stepCounter:"+stepSensor.getMaximumRange());
+        }
+        if(stepDetector!=null){
+            Log.d(TAG,"stepDetector 获取成功");
+            Log.d(TAG,"stepDetector:"+stepDetector.getResolution());
+            Log.d(TAG,"stepDetector:"+stepDetector.getMaximumRange());
+        }
+
+//        Sensor testSensor = stepManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+//        stepManager.registerListener(this,testSensor,SensorManager.SENSOR_DELAY_NORMAL);
+        stepManager.registerListener(mListener,stepSensor,SensorManager.SENSOR_DELAY_NORMAL,0);
+        stepManager.registerListener(mListener,stepDetector,SensorManager.SENSOR_DELAY_NORMAL,0);
+
+        Log.d(TAG,"步数初始化...");
+//        List<Sensor> list=stepManager.getSensorList(Sensor.TYPE_ALL);
+//        for(Sensor sensor:list){
+//            Log.e(TAG, "initData: "+sensor.getName() );
+//        }
+    }
+
+    /*
+    ** 继承自接口的方法
+     */
 
     @Override
     public void showErrorMessage() {
@@ -294,11 +396,14 @@ public class RightFragment extends Fragment implements IDBView,RightAdapter.OnIt
         dialog.show();
     }
 
-    //绑定rv的点击事件
+    //监听rv的点击事件
+    //打开新的宝可梦详情页面
     @Override
     public void onItemClick(RecyclerView parent, View view, int p_id) {
         Intent info_intent = new Intent(parent_context, PokemonInfoActivity.class);
         info_intent.putExtra("p_id",p_id);
         startActivity(info_intent);
     }
+
+
 }

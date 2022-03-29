@@ -19,16 +19,15 @@ import android.widget.Toast;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.MapView;
 import com.amap.api.maps.MapsInitializer;
 import com.amap.api.maps.TextureMapView;
-import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.example.mydatabinding.R;
+import com.example.mydatabinding.enity.Trainer;
 import com.example.mydatabinding.presenter.IMapPresenter;
 import com.example.mydatabinding.presenter.MiddlePresenter;
 
@@ -165,6 +164,9 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
         Log.d(TAG,"onDestroy");
     }
 
+    /**
+     * 回调函数
+     */
     @Override
     public void cleanMarker() {
         if(!markerList.isEmpty()){
@@ -173,7 +175,6 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
             }
         }
     }
-
 
     @Override
     public void setMarker(List<LatLng> position_list, int pokemon_id, String pokemon_name, List<String> addressList) {
@@ -204,6 +205,30 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
     }
 
     @Override
+    public void showNotLogin() {
+        Toast.makeText(parent_context, "还没有登录，请登录！", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAlreadyLogin(Trainer trainer, String p_name) {
+        long t_id = trainer.getT_id();
+        String t_name = trainer.getT_name();
+        int p_id = 0;
+        if(p_name.equals("妙蛙种子")) p_id = 1;
+        if(p_name.equals("小火龙")) p_id = 4;
+        if(p_name.equals("杰尼龟")) p_id = 7;
+        if(p_name.equals("皮卡丘")) p_id = 25;
+        Intent camera_intent = new Intent(parent_context,CameraActivity.class);
+        camera_intent.putExtra("p_id",p_id);
+        camera_intent.putExtra("t_id",t_id);
+        camera_intent.putExtra("t_name",t_name);
+        startActivity(camera_intent);
+    }
+
+    /**
+     * 位置监听
+     */
+    @Override
     public void onMyLocationChange(Location location) {
         currentLocation = new LatLng(location.getLatitude(),location.getLongitude());
     }
@@ -219,7 +244,9 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //预留的捕捉功能的接口
-                        Toast.makeText(parent_context, "按下捕捉："+p_name, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(parent_context, "按下捕捉："+p_name, Toast.LENGTH_SHORT).show();
+                        //捕捉时需要判断是否登录，若已经登录，则打开对应页面
+                        middlePresenter.isLogin(p_name);
                     }
                 })
                 .setNeutralButton("查看精灵信息", new DialogInterface.OnClickListener() {

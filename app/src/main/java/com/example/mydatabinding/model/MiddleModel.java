@@ -1,18 +1,18 @@
 package com.example.mydatabinding.model;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.amap.api.maps.model.LatLng;
-import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiResult;
 import com.amap.api.services.poisearch.PoiSearch;
-import com.example.mydatabinding.view.MainActivity;
+import com.example.mydatabinding.enity.Trainer;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class MiddleModel implements IMapModel, PoiSearch.OnPoiSearchListener {
 
     @Override
     public void getPokemonPosition(String keyword) {
-        query = new PoiSearch.Query(keyword,"","0531");
+        query = new PoiSearch.Query(keyword,"","");
         //keyWord表示搜索字符串，
         //第二个参数表示POI搜索类型，二者选填其一，选用POI搜索类型时建议填写类型代码，码表可以参考下方（而非文字）
         //cityCode表示POI搜索区域，可以是城市编码也可以是城市名称，也可以传空字符串，空字符串代表全国在全国范围内进行搜索
@@ -54,6 +54,45 @@ public class MiddleModel implements IMapModel, PoiSearch.OnPoiSearchListener {
             callback.failure();
         }
 
+    }
+
+    @Override
+    public void isLogin(String p_name) {
+        String file_url = context.getFilesDir().getPath()+"/trainerState.txt";
+        File file = new File(file_url);
+        if(file.exists()){
+            Trainer trainer = new Trainer();
+            try {
+                FileReader reader = new FileReader(file);
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                String str_tid = bufferedReader.readLine();
+                long t_id = Long.parseLong(str_tid);
+
+                String password = bufferedReader.readLine();
+                String trainer_name = bufferedReader.readLine();
+
+                String str_timestamp = bufferedReader.readLine();
+                long timestamp = Long.parseLong(str_timestamp);
+                long current_time = (long) System.currentTimeMillis()/1000;
+                long daySeconds = 86400;//一天有86400秒
+                if(current_time-timestamp<daySeconds){
+//                    Log.d("zhu","登录文件未过期");
+                    trainer.setT_id(t_id);
+                    trainer.setPassword(password);
+                    trainer.setT_name(trainer_name);
+                    callback.alreadyLogin(trainer,p_name);
+                }else {
+//                    Log.d("zhu","登录文件已过期");
+                    callback.notLogin();
+                }
+                bufferedReader.close();
+                reader.close();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else {
+            callback.notLogin();
+        }
     }
 
     @Override
@@ -88,5 +127,7 @@ public class MiddleModel implements IMapModel, PoiSearch.OnPoiSearchListener {
     public interface SearchCallback{
         void success(List<LatLng> positionList,String this_keyword,List<String> addressList);
         void failure();
+        void alreadyLogin(Trainer trainer, String p_name);
+        void notLogin();
     }
 }

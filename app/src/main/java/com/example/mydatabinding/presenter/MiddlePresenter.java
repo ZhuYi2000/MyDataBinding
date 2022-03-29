@@ -3,6 +3,7 @@ package com.example.mydatabinding.presenter;
 import android.content.Context;
 
 import com.amap.api.maps.model.LatLng;
+import com.example.mydatabinding.enity.Trainer;
 import com.example.mydatabinding.model.IMapModel;
 import com.example.mydatabinding.model.MiddleModel;
 import com.example.mydatabinding.view.IMapView;
@@ -33,6 +34,12 @@ public class MiddlePresenter implements IMapPresenter, MiddleModel.SearchCallbac
     }
 
     @Override
+    public void isLogin(String p_name) {
+        middleModel.isLogin(p_name);
+    }
+
+    //回调方法
+    @Override
     public void success(List<LatLng> positionList,String this_keyword,List<String> addressList) {
         if(this_keyword.equals("公园"))
             middleFragment.setMarker(positionList,1,"妙蛙种子",addressList);
@@ -47,5 +54,15 @@ public class MiddlePresenter implements IMapPresenter, MiddleModel.SearchCallbac
     @Override
     public void failure() {
         middleFragment.showErrorMessage();
+    }
+
+    @Override
+    public void alreadyLogin(Trainer trainer, String p_name) {
+        middleFragment.showAlreadyLogin(trainer,p_name);
+    }
+
+    @Override
+    public void notLogin() {
+        middleFragment.showNotLogin();
     }
 }
