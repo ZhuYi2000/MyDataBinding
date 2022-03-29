@@ -6,6 +6,7 @@
             name="user"
             type="com.example.mydatabinding.User" />
     </data>
+    <!--padding给状态栏和底部导航条留出空间 -->
     <LinearLayout
         android:paddingTop="30dp"
         android:paddingBottom="15dp"

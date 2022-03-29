@@ -203,7 +203,7 @@ public class RightFragment extends Fragment implements IDBView,RightAdapter.OnIt
         //只有在小米手机上，才能使用计步器接口
         if(brand.equals("Xiaomi")){
             MiStepSensor miStepSensor = new MiStepSensor(parent_context);
-            int todaySteps = miStepSensor.getTodaySteps(todaySteps_tv);
+            miStepSensor.getTodaySteps(todaySteps_tv);
         }
 
         return view;

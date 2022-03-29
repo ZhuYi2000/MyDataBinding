@@ -111,7 +111,9 @@ public class MiddleFragment extends Fragment implements IMapView, AMap.OnMyLocat
                     super.run();
                     try {
                         Looper.prepare();
-                        Thread.sleep(1000);
+                        while (currentLocation.latitude==0.0){
+                            Thread.sleep(100);
+                        }
                         Log.e("zhu","LAT"+currentLocation.latitude);
                         Log.e("zhu","Lon"+currentLocation.longitude);
                         middlePresenter.searchPokemon(currentLocation,3000);

@@ -7,13 +7,10 @@ import com.example.mydatabinding.enity.Trainer;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -135,8 +132,9 @@ public class RightModel implements IDBModel {
         }
     }
 
+    //插入在cameraModel中实现
     @Override
-    public void insertPokemonByTrainer(long trainer_id, long pokemon_id) {
+    public void insertPokemonByTrainer(long trainer_id, int pokemon_id) {
 
     }
 
@@ -186,6 +184,7 @@ public class RightModel implements IDBModel {
         }
     }
 
+    //通过文件读写保存登录状态
     @Override
     public void saveLogin(Trainer trainer, Context context) {
         try {

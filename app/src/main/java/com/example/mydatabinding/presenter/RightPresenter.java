@@ -82,7 +82,7 @@ public class RightPresenter implements IDBPresenter, RightModel.DataBaseCallback
     }
 
     @Override
-    public void addPokemonByTrainer(long trainer_id, long pokemon_id) {
+    public void addPokemonByTrainer(long trainer_id, int pokemon_id) {
 
     }
 
