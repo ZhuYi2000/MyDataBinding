@@ -16,16 +16,19 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" /> <!-- 如果设置了target >= 28 如果需要启动后台定位则必须声明这个权限 -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- 如果您的应用需要后台定位权限，且有可能运行在Android Q设备上,并且设置了target>28，必须增加这个权限声明 -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 相机权限 -->
     <uses-feature android:name="android.hardware.camera" /> <!-- 相机功能 -->
+
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" /> <!-- 计步权限，必须打开 -->
-    <uses-permission android:name="miui.permission.READ_STEPS" />
+    <uses-permission android:name="miui.permission.READ_STEPS" /><!-- 小米手机的计步权限，必须打开 -->
 
     <uses-feature android:name="android.hardware.sensor.stepcounter" /> <!-- 计步功能 -->
     <uses-feature android:name="android.hardware.sensor.stepdetector" />
 
+    <uses-permission android:name="android.permission.VIBRATE"/><!-- 震动权限 -->
     <queries>
-        <package android:name="com.autonavi.minimap" />
+        <package android:name="com.autonavi.minimap" /> <!-- 允许获取到高德APP -->
     </queries>
 
     <application

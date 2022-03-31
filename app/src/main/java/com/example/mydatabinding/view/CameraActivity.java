@@ -32,6 +32,7 @@ import com.example.mydatabinding.R;
 import com.example.mydatabinding.presenter.CameraPresenter;
 import com.example.mydatabinding.presenter.IDBPresenter;
 import com.example.mydatabinding.sensor.CameraPreview;
+import com.example.mydatabinding.sensor.VibrateHelp;
 import com.wang.avi.AVLoadingIndicatorView;
 
 public class CameraActivity extends AppCompatActivity implements SensorEventListener {
@@ -47,6 +48,7 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     int p_id;
     long t_id;
     String t_name;
+    boolean click_ball = false;
 
     int shake_num = 0;
 
@@ -70,12 +72,13 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
     };
 
 
-    //精灵球的点击事件，由于涉及到陀螺仪等，因此单独拿出来写
+    //精灵球的点击事件，获取传感器陀螺仪、为其注册监听器
     private final View.OnClickListener ballClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
 //            Toast.makeText(context, "点击精灵球", Toast.LENGTH_SHORT).show();
 //            cameraPresenter.addPokemonByTrainer(t_id,p_id);//测试插入功能是否正常
+            click_ball = true;
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
             //获取线性加速度计
             sensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
@@ -95,14 +98,18 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
                     CameraPreview preview = new CameraPreview(context);
                     mFrameLayout.addView(preview);//相机在最底层
 
+
                     horizontalPB.bringToFront();//将进度条层数提到相机前面
+
 
                     ImageView imageView_0 = new ImageView(context);
                     FrameLayout.LayoutParams fl_0 = new FrameLayout.LayoutParams(1600,1600, Gravity.CENTER);
                     fl_0.setMargins(0,0,10,20);
                     imageView_0.setLayoutParams(fl_0);
                     imageView_0.setImageResource(R.drawable.circle);
+
                     mFrameLayout.addView(imageView_0);//底部的圆形
+
 
                     ImageView imageView = new ImageView(context);
                     FrameLayout.LayoutParams fl = new FrameLayout.LayoutParams(800,800, Gravity.CENTER);
@@ -115,6 +122,7 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
 
                     mFrameLayout.addView(imageView);//然后是3D宝可梦层
 
+
                     ImageView imageView_2 = new ImageView(context);
                     FrameLayout.LayoutParams fl_2 = new FrameLayout.LayoutParams(500,500, Gravity.CENTER);
                     fl_2.setMargins(0,650,0,0);
@@ -122,6 +130,8 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
                     imageView_2.setImageResource(R.drawable.pokeball3d);
                     imageView_2.setOnClickListener(ballClick);
                     mFrameLayout.addView(imageView_2);//然后是3D精灵球层
+
+                    Toast.makeText(context, "点击精灵球开始捕捉！", Toast.LENGTH_SHORT).show();
 
                 }else {
                     //权限不被允许
@@ -138,7 +148,6 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
         context = this;
 
         cameraPresenter = new CameraPresenter(this);
-
 
         Intent intent = getIntent();
         p_id = intent.getIntExtra("p_id",25);//获取宝可梦ID
@@ -173,22 +182,41 @@ public class CameraActivity extends AppCompatActivity implements SensorEventList
         horizontalPB = findViewById(R.id.horizontalPB);
     }
 
+    //不用以后，取消对传感器的监听，节省电量
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //如果不加判断，会导致空指针错误
+        if(click_ball) {
+            sensorManager.unregisterListener(this);
+        }
+    }
+
+    //cameraPresenter.addPokemonByTrainer的回调方法，捕捉成功后执行
     public void successCatch(long trainer_id,int pokemon_id){
         Message message = new Message();
         message.what = 1;
         handler.sendMessage(message);
     }
 
+
+    //监听传感器，012分布是xyz轴的加速度（去除了重力的影响）
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(sensorEvent.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION &&sensorEvent.values[0]>3){
-            Log.d(TAG,"x:"+sensorEvent.values[0]);
-            Log.d(TAG,"y:"+sensorEvent.values[1]);
-            Log.d(TAG,"z:"+sensorEvent.values[2]);
+//            Log.d(TAG,"x:"+sensorEvent.values[0]);
+//            Log.d(TAG,"y:"+sensorEvent.values[1]);
+//            Log.d(TAG,"z:"+sensorEvent.values[2]);
             shake_num+=1;
-            if(shake_num<10) horizontalPB.setProgress(shake_num*10);
+            if(shake_num<10) {
+                horizontalPB.setProgress(shake_num * 10);
+                //震动0.5s
+                VibrateHelp.vSimple(context,500);
+            }
             if(shake_num==10){
                 cameraPresenter.addPokemonByTrainer(t_id,p_id);//捕捉精灵
+                //震动2s
+                VibrateHelp.vSimple(context,2000);
             }
         }
     }
